@@ -14,29 +14,84 @@ const CONFIG_DIR = path.resolve(__dirname, "../../config");
 const CONFIG_FILE = path.join(CONFIG_DIR, "headers.json");
 
 const BUILTIN_DEFAULTS = [
-  "L I R",
-  "L I D",
   "CT CASES",
   "CC NI ACT",
+  "MISC CRL",
+  "CT CASES CC NI ACT MISC CRL",
   "CS DJ",
+  "CS",
+  "ARBTN",
+  "EX. CIVIL",
+  "CONTEMPT PETITION",
+  "MISC DJ",
+  "RCA DJ",
+  "EX CIVIL",
+  "RCA SCJ",
   "RCA",
   "BAIL MATTERS",
-  "MISC DJ",
+  "SC",
+  "CR CASES",
+  "CR CASE NO.",
+  "CT CASE NO.",
+  "CS SCJ",
+  "RC SCJ",
+  "EX",
+  "RC ARC",
   "EXECUTION (COMM.)",
-  "OMP (COMM.)",
+  "OMP(I)(COMM)",
+  "OMP(I)(COMM.)",
+  "OMP (I) (COMM.)",
+  "EX.COMM – AWARD BY ARB. COMM.",
+  "SC NO.",
   "CA",
+  "CS (COMM)",
+  "OMP (COMM.)",
+  "EX.COMM - AWARD BY ARB. COMM.",
+  "COUNTER CLAIM",
+  "OMP (I)(COMM.)",
+  "CS (COMM.)",
+  "MISC",
+  "MCA SCJ",
   "IA",
+  "TC",
+  "L I R",
+  "L I D",
+  "LCA",
+  "CT. CASES",
+  "CC NO",
+  "CC NO.",
+  "$$$",
+  "COMM",
+  "CS COMM",
+  "OMP (I) COMM",
+  "OMP (COMM)",
+  "EXECUTION (COMM)",
+  "EX COMM",
+  "MISC SCJ",
+  "DD NO.",
+  "CR CASE",
+  "BAIL MATTER",
+  "IA NO.",
+  "CA NO.",
+  "CR. REV. NO.",
+  "LC",
+  "L C A",
+  "CT CASES, CC NI ACT",
+  "ABCD",
+  "MCA DJ",
+  "MISC. DJ",
 ];
 
 /**
- * The default list can be overridden with a comma-separated
- * DEFAULT_HEADERS environment variable. On hosts without a permanent
- * disk (Render free tier) this is the reliable place to keep the
- * office's real list, since dashboard env vars survive restarts while
- * file edits do not.
+ * The default list can be overridden with a DEFAULT_HEADERS environment
+ * variable — pipe-separated if it contains "|" (needed because some
+ * headers contain commas), otherwise comma-separated. Useful on hosts
+ * without a permanent disk (Render free tier), where dashboard env vars
+ * survive restarts while file edits do not.
  */
-const fromEnv = (process.env.DEFAULT_HEADERS ?? "")
-  .split(",")
+const rawEnv = process.env.DEFAULT_HEADERS ?? "";
+const fromEnv = rawEnv
+  .split(rawEnv.includes("|") ? "|" : ",")
   .map((h) => h.trim())
   .filter((h) => h.length > 0);
 

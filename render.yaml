@@ -20,5 +20,6 @@ services:
         value: "50"
       - key: MAX_CONCURRENT_JOBS
         value: "3"
-      - key: DEFAULT_HEADERS
-        value: "L I R,L I D,CT CASES,CC NI ACT,CS DJ,RCA,BAIL MATTERS,MISC DJ,EXECUTION (COMM.),OMP (COMM.),CA,IA"
+      # The full built-in default header list ships in the code. To
+      # override it, add a DEFAULT_HEADERS env var in the dashboard,
+      # pipe-separated: "L I R|CC NI ACT|CT CASES, CC NI ACT|..."

@@ -2,6 +2,10 @@
   "users": {
     "alice@court.test": [
       "BAIL MATTERS"
+    ],
+    "fresh.clerk@test.com": [
+      "L I R",
+      "BAIL MATTERS"
     ]
   }
 }

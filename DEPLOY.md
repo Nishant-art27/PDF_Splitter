@@ -50,8 +50,9 @@ next visitor.
 
 5. **Changing things later** (all in the Render dashboard → Environment):
    - Change the passcode: edit `ACCESS_PASSCODE`, save (auto-redeploys).
-   - Change the office's standard header list: edit `DEFAULT_HEADERS`
-     (comma-separated).
+   - Change the office's standard header list: add a `DEFAULT_HEADERS`
+     env var, pipe-separated (e.g. `L I R|CC NI ACT|CT CASES, CC NI ACT`).
+     Without it, the full built-in default list applies.
    - Updating the app: `git push` from your Mac — Render redeploys
      automatically.
 
