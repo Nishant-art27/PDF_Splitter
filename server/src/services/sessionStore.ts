@@ -46,6 +46,12 @@ export function getSession(id: string, owner: string): Session | undefined {
   return session;
 }
 
+/** Wipe a result set immediately (user left the page or started over). */
+export function destroySession(id: string, owner: string): void {
+  const session = sessions.get(id);
+  if (session && session.owner === owner) sessions.delete(id);
+}
+
 export function startSessionCleanup(): NodeJS.Timeout {
   const timer = setInterval(() => {
     const now = Date.now();

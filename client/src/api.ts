@@ -162,6 +162,17 @@ export async function saveHeaders(headers: string[]): Promise<string[]> {
   return body.headers;
 }
 
+/**
+ * Tell the server to erase a result set from memory right now. Uses
+ * sendBeacon so it also fires reliably while the page is being unloaded
+ * (refresh / tab close); falls back to fetch for normal calls.
+ */
+export function destroyResultSession(sessionId: string): void {
+  const url = `/api/sessions/${sessionId}/destroy`;
+  if (navigator.sendBeacon?.(url)) return;
+  void fetch(url, { method: "POST", keepalive: true }).catch(() => {});
+}
+
 export function fileDownloadUrl(sessionId: string, fileId: string): string {
   return `/api/sessions/${sessionId}/files/${fileId}`;
 }

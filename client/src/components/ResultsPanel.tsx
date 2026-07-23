@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ProcessResponse } from "../types";
-import { fileDownloadUrl, zipDownloadUrl } from "../api";
+import { fileDownloadUrl, zipDownloadUrl, destroyResultSession } from "../api";
 import { formatRemaining, formatSize } from "../format";
 import Icon from "./Icon";
 
@@ -18,6 +18,14 @@ export default function ResultsPanel({
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Refreshing or closing the page erases the generated PDFs from the
+  // server immediately — nothing lingers once the results leave the screen.
+  useEffect(() => {
+    const wipe = () => destroyResultSession(result.sessionId);
+    window.addEventListener("pagehide", wipe);
+    return () => window.removeEventListener("pagehide", wipe);
+  }, [result.sessionId]);
 
   const remaining = result.expiresAt - now;
   const expired = remaining <= 0;

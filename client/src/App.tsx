@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ProcessResponse } from "./types";
-import { fetchMe, logout, setUnauthorizedHandler } from "./api";
+import { fetchMe, logout, setUnauthorizedHandler, destroyResultSession } from "./api";
 import UploadPanel from "./components/UploadPanel";
 import ResultsPanel from "./components/ResultsPanel";
 import SettingsPanel from "./components/SettingsPanel";
@@ -28,14 +28,20 @@ export default function App() {
       .finally(() => setAuthChecked(true));
   }, []);
 
+  /** Leaving the results screen erases the generated PDFs immediately. */
+  function clearResult() {
+    if (result) destroyResultSession(result.sessionId);
+    setResult(null);
+  }
+
   async function handleLogout() {
+    clearResult();
     try {
       await logout();
     } catch {
       // Server unreachable — still sign out locally.
     }
     setUser(null);
-    setResult(null);
     setTab("split");
   }
 
@@ -101,7 +107,7 @@ export default function App() {
             <ResultsPanel
               key={result.sessionId}
               result={result}
-              onReset={() => setResult(null)}
+              onReset={clearResult}
             />
           ) : (
             <UploadPanel onProcessed={setResult} />

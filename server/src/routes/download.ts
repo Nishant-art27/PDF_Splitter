@@ -1,6 +1,6 @@
 import { Router } from "express";
 import archiver from "archiver";
-import { getSession } from "../services/sessionStore.js";
+import { getSession, destroySession } from "../services/sessionStore.js";
 
 export const downloadRouter = Router();
 
@@ -8,6 +8,16 @@ function contentDisposition(filename: string): string {
   const fallback = filename.replace(/["\\]/g, "_");
   return `attachment; filename="${fallback}"; filename*=UTF-8''${encodeURIComponent(filename)}`;
 }
+
+/**
+ * Immediately erase a result set from memory. Fired by the browser the
+ * moment the user refreshes, closes the tab, or starts a new split —
+ * a POST because navigator.sendBeacon() can only send POST.
+ */
+downloadRouter.post("/:sessionId/destroy", (req, res) => {
+  destroySession(req.params.sessionId, res.locals.loginId);
+  res.status(204).end();
+});
 
 /** Download a single generated PDF (only by the user who created it). */
 downloadRouter.get("/:sessionId/files/:fileId", (req, res) => {
