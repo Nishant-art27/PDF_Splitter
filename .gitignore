@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# contains password hashes — never commit
+server/config/users.json
+# contains the mail account password — never commit
+server/config/smtp.json

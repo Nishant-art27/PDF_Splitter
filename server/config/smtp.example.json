@@ -1,0 +1,8 @@
+{
+  "host": "smtp.gmail.com",
+  "port": 465,
+  "secure": true,
+  "user": "mnishant2173@gmail.com",
+  "pass": "your-16-character-gmail-app-password",
+  "from": "Legal PDF Splitter <mnishant2173@gmail.com>"
+}

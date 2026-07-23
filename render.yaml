@@ -1,0 +1,24 @@
+# Render blueprint — deploys the app on Render's free tier in
+# shared-passcode mode. In the Render dashboard you must set
+# ACCESS_PASSCODE yourself (it is intentionally not stored here).
+services:
+  - type: web
+    name: pdf-splitter
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: AUTH_MODE
+        value: passcode
+      - key: ACCESS_PASSCODE
+        sync: false
+      - key: SECURE_COOKIES
+        value: "1"
+      - key: MAX_UPLOAD_MB
+        value: "50"
+      - key: MAX_CONCURRENT_JOBS
+        value: "3"
+      - key: DEFAULT_HEADERS
+        value: "L I R,L I D,CT CASES,CC NI ACT,CS DJ,RCA,BAIL MATTERS,MISC DJ,EXECUTION (COMM.),OMP (COMM.),CA,IA"
