@@ -13,6 +13,50 @@ import ContactAdmin from "./ContactAdmin";
 
 type Mode = "signin" | "signup" | "forgot";
 
+const inputClass =
+  "w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none";
+const labelClass = "mb-1.5 block text-sm font-medium text-slate-700";
+
+/** Password input with an eye toggle to reveal what was typed. */
+function PasswordField({
+  id,
+  value,
+  onChange,
+  autoComplete,
+  placeholder,
+}: {
+  id: string;
+  value: string;
+  onChange: (value: string) => void;
+  autoComplete: string;
+  placeholder: string;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        className={`${inputClass} pr-11`}
+      />
+      <button
+        type="button"
+        onClick={() => setShow((s) => !s)}
+        title={show ? "Hide" : "Show"}
+        aria-label={show ? "Hide password" : "Show password"}
+        tabIndex={-1}
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 transition-colors hover:text-slate-700"
+      >
+        <Icon name={show ? "eyeOff" : "eye"} className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
+
 export default function AuthPage({ onLogin }: { onLogin: (username: string) => void }) {
   const [authMode, setAuthMode] = useState<AuthMode | null>(null);
   const [mode, setMode] = useState<Mode>("signin");
@@ -93,10 +137,6 @@ export default function AuthPage({ onLogin }: { onLogin: (username: string) => v
       setBusy(false);
     }
   }
-
-  const inputClass =
-    "w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm shadow-sm transition-colors focus:border-indigo-400 focus:outline-none";
-  const labelClass = "mb-1.5 block text-sm font-medium text-slate-700";
 
   const submitLabel = busy
     ? mode === "signup"
@@ -230,14 +270,18 @@ export default function AuthPage({ onLogin }: { onLogin: (username: string) => v
                         ? "Password"
                         : "New password"}
                   </label>
-                  <input
+                  <PasswordField
                     id="auth-password"
-                    type="password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={setPassword}
                     autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                    placeholder={mode === "signin" ? "••••••••" : "At least 6 characters"}
-                    className={inputClass}
+                    placeholder={
+                      authMode === "passcode"
+                        ? "Enter the passcode"
+                        : mode === "signin"
+                          ? "••••••••"
+                          : "At least 6 characters"
+                    }
                   />
                 </div>
               )}
@@ -247,14 +291,12 @@ export default function AuthPage({ onLogin }: { onLogin: (username: string) => v
                   <label htmlFor="auth-confirm" className={labelClass}>
                     Confirm password
                   </label>
-                  <input
+                  <PasswordField
                     id="auth-confirm"
-                    type="password"
                     value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
+                    onChange={setConfirm}
                     autoComplete="new-password"
                     placeholder="Type it again"
-                    className={inputClass}
                   />
                 </div>
               )}
