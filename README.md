@@ -41,14 +41,19 @@ reverse proxy as `/api`).
 
 1. Every page's text is extracted with pdf.js and grouped into visual lines.
 2. The top ~10 lines of each page are normalized (trimmed, whitespace
-   collapsed, uppercased) and compared against the configured headers.
-   A header must match as a whole-token prefix of a line, so `CA` matches
-   `CA 105/23` but not `CASE STATUS REPORT`.
+   collapsed, uppercased, dots/commas dropped) and compared against the
+   configured headers. A header must match as a whole-token prefix of a
+   line, so `CA` matches `CA 105/23` but not `CASE STATUS REPORT`. A
+   cause-list serial number before the header is ignored, so
+   `31 Cr. Case 8295/2025` matches the header `CR CASE`.
 3. A matching page closes the previous document and starts a new one; the
-   following pages belong to it until the next match.
-4. The output filename is built from the header and the case number found on
-   the first page: `L I R 9388/16` starting on source page 1 becomes
-   `L I R 9388_16_Page_1.pdf` (invalid filename characters sanitized).
+   following pages belong to it until the next match. Consecutive pages that
+   repeat the same heading (e.g. a charge sheet and a statement for the same
+   case number) stay in one document.
+4. The output filename is the full heading from the document plus the source
+   page range: `31 Cr. Case 8295/2025` spanning pages 44–45 becomes
+   `31 Cr. Case 8295_2025 (44-45).pdf` (invalid filename characters such as
+   `/` are sanitized to `_`).
 5. Pages before the first match — or a PDF where nothing can be classified —
    become `not done YYYY-MM-DD.pdf` for manual review.
 

@@ -41,6 +41,12 @@ export async function processPdf(
     mode = "fallback";
   }
 
+  // Consecutive pages carrying the same heading (e.g. a charge sheet and a
+  // statement for the same case number) belong to one document.
+  boundaries = boundaries.filter(
+    (b, i) => i === 0 || b.unclassified || b.label !== boundaries[i - 1].label
+  );
+
   // Pages before the first boundary (or the whole PDF when nothing was
   // detected) form an unclassified segment for manual review.
   if (boundaries.length === 0 || boundaries[0].pageIndex > 0) {
@@ -54,7 +60,7 @@ export async function processPdf(
   }));
 
   const filenames = dedupeFilenames(
-    segments.map((s) => buildFilename(s.boundary, s.startIndex + 1))
+    segments.map((s) => buildFilename(s.boundary, s.startIndex + 1, s.endIndex + 1))
   );
 
   const source = await PDFDocument.load(pdfBytes);

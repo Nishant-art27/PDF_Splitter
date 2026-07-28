@@ -18,20 +18,19 @@ export function unclassifiedFilename(date = new Date()): string {
 }
 
 /**
- * Build the output filename for a document segment.
+ * Build the output filename for a document segment: the full heading
+ * followed by the source page range.
  *
- * "L I R" + case number "9388/16" starting on source page 1 becomes
- * "L I R 9388_16_Page_1.pdf".
+ * "31 Cr. Case 8295/2025" spanning source pages 44-45 becomes
+ * "31 Cr. Case 8295_2025 (44-45).pdf" (slashes are invalid in
+ * filenames, so they become underscores).
  */
-export function buildFilename(boundary: Boundary, pageStart: number): string {
+export function buildFilename(boundary: Boundary, pageStart: number, pageEnd: number): string {
   if (boundary.unclassified || boundary.label === "") {
     return unclassifiedFilename();
   }
-  const parts = [boundary.label];
-  if (boundary.caseNumber) {
-    parts.push(boundary.caseNumber.replace(/\s*\/\s*/g, "_"));
-  }
-  return sanitizeFilename(`${parts.join(" ")}_Page_${pageStart}`) + ".pdf";
+  const pages = pageStart === pageEnd ? `${pageStart}` : `${pageStart}-${pageEnd}`;
+  return sanitizeFilename(`${boundary.label} (${pages})`) + ".pdf";
 }
 
 /** Ensure every filename in the list is unique by appending " (n)". */

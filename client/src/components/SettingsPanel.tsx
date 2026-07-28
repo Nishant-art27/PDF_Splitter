@@ -78,8 +78,9 @@ export default function SettingsPanel() {
           <h2 className="font-semibold tracking-tight">Classification headers</h2>
           <p className="mt-0.5 text-sm text-slate-500">
             A new document starts whenever a page begins with one of these headers (checked in the
-            top lines of each page, case- and whitespace-insensitive). This list is saved to your
-            account — it stays yours after you sign out, and other users have their own.
+            top lines of each page; case, punctuation, and a leading serial number like the “31” in
+            “31 Cr. Case 8295/2025” are ignored). This list is saved to your account — it stays
+            yours after you sign out, and other users have their own.
           </p>
         </div>
       </div>
