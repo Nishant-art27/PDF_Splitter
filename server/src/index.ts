@@ -60,6 +60,26 @@ app.use(
 startSessionCleanup();
 startAuthSessionCleanup();
 
+/**
+ * Free-tier keep-alive: Render spins the instance down after 15 idle
+ * minutes and has (rarely) failed to wake it again, leaving the site
+ * hanging. Pinging our own public URL every 10 minutes keeps the
+ * instance awake around the clock — one service running 24/7 fits
+ * within the 750 free instance-hours per month, provided no other free
+ * service on the account is also running. RENDER_EXTERNAL_URL is set
+ * automatically by Render, so this never runs in local dev.
+ */
+const KEEP_ALIVE_URL = process.env.RENDER_EXTERNAL_URL;
+if (KEEP_ALIVE_URL) {
+  const keepAlive = setInterval(() => {
+    fetch(`${KEEP_ALIVE_URL}/api/health`).catch(() => {
+      // Best effort — if a ping fails, the next one tries again.
+    });
+  }, 10 * 60 * 1000);
+  keepAlive.unref();
+  console.log(`Keep-alive self-ping enabled for ${KEEP_ALIVE_URL}`);
+}
+
 app.listen(PORT, () => {
   console.log(`PDF splitter API listening on http://localhost:${PORT}`);
 });
